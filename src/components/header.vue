@@ -6,9 +6,9 @@
           <div class="header_left">
             <div class="logo_box"></div>
             <div class="view_list" v-if="routerS.isWindow">
-              <div class="view_item" v-for="(item, index) in viewChangeList" :key="item.id" v-show="item.state" @click="viewChangeFn(item.id)">
+              <div class="view_item" v-for="(item, index) in routerS.viewChangeList" :key="item.id" v-show="item.state">
                 <div class="view_text">
-                  <RouterLink :to="item.to"  :style="{color: item.select ? 'rgb(125, 171, 235)': 'rgb(67, 67, 67)'}">{{ item.name }}</RouterLink>
+                  <RouterLink :to="item.to"  :style="{color: item.select ? 'rgb(125, 171, 235)': 'rgb(67, 67, 67)'}" @click="routerS.viewChangeFn(item.to)">{{ item.name }}</RouterLink>
                 </div> 
               </div>
             </div>
@@ -28,16 +28,17 @@
                 <el-button type="primary" color="rgb(125, 171, 235)"><span style="color: white">创作中心&nbsp;&nbsp;<span class="icon-chevron-down"></span></span></el-button>
               </div>
               <div class="my_base">
-                <el-button type="primary" plain color="rgb(125, 171, 235)">登陆 / 注册</el-button>
+                <el-button type="primary" plain color="rgb(125, 171, 235)" @click="goLogin">登陆 / 注册</el-button>
               </div>
             </div>
           </div>
         </div>
         <div class="none_box" v-else>
+          <span class="icon-chevron-left" @click="backFn"></span>
         </div>
       </div>
       <div class="label_box" v-if="routerS.isWindow">
-        <div class="label_item" v-for="(item, index) in label_list" :key="item.id" @click="labelItemFn(item)" :style="{color: item.id == labelSelect.id ? 'rgb(113, 168, 246)': 'rgb(119, 119, 119)'}">
+        <div class="label_item" v-for="(item, index) in routerS.fullpath == '/search' ? label_search_list: label_list" :key="item.id" @click="labelItemFn(item)" :style="{color: item.id == labelSelect.id ? 'rgb(113, 168, 246)': 'rgb(119, 119, 119)'}">
           <span v-if="item.children && item.children.length != 0">
             <el-popover
               placement="bottom-start"
@@ -81,19 +82,26 @@ import bus from '@/utils/bus'
 const routerS = routerStore()
 const router = useRouter()
 
-const viewChangeList:indexVue.viewChangeList = ref([
-  {id: 1, name: '首页', state: true, select: true, to: '/index'},
-  {id: 2, name: '浮冰', state: true, select: false, to: '/chat'},
-  {id: 3, name: '捕鱼', state: false, select: false, to: ''}
-])
-const viewChangeFn = (id: number) => {
-  viewChangeList.value.forEach((item) => {
-    if(item.id == id) {
-      item.select = true
-    } else {
-      item.select = false
-    }
-  })
+const backFn = () => {
+  console.log(12312)
+  router.back()
+}
+// const viewChangeList:indexVue.viewChangeList = ref([
+//   {id: 1, name: '首页', state: true, select: true, to: '/index'},
+//   {id: 2, name: '浮冰', state: true, select: false, to: '/chat'},
+//   {id: 3, name: '捕鱼', state: false, select: false, to: '/'}
+// ])
+// const viewChangeFn = (id: number) => {
+//   viewChangeList.value.forEach((item) => {
+//     if(item.id == id) {
+//       item.select = true
+//     } else {
+//       item.select = false
+//     }
+//   })
+// }
+const goLogin = ()=>{
+  router.push('/login')
 }
 
 const label_list:indexVue.labelList = ref([
@@ -135,6 +143,10 @@ const label_list:indexVue.labelList = ref([
     ]
   }
 ])
+const label_search_list:indexVue.labelList = ref([
+  {id: 1, label: '文章'},
+  {id: 2, label: '用户'}
+])
 let labelSelect:Ref<indexVue.labelSelect> = ref({
   id: 0,
   children: 0
@@ -157,7 +169,7 @@ let inputChange = ref(false)
 let selectLabelCascader:Ref<number[]> = ref([0])
 let phoneSearch = ()=>{
   if(!routerS.isWindow) {
-    router.push('/search')
+    router.push('/searchPhone')
   }
 }
 let bottomBarList:indexVue.bottomBarList = ref([
@@ -185,8 +197,14 @@ let selectChange = function() {
   .none_box {
     // display: flex;
     // align-items: center;
+    display: flex;
+    align-items: center;
     width: 100%;
     height: 100%;
+    span {
+      font-size: 40px;
+      color: rgb(197, 197, 197);
+    }
   }
   .header_subject {
     flex: 1;

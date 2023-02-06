@@ -8,7 +8,11 @@
       </SkeletonVue>
     </template>
     <template #fallback>
-      <el-skeleton :rows="4" />
+      <div style="width: 100%;padding-left: 20px;padding-top: 12px;">
+        <div style="width: 80%">
+          <el-skeleton :rows="3" />
+        </div>
+      </div>
     </template>
   </Suspense>
 </template>

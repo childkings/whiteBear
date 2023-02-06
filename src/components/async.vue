@@ -10,4 +10,5 @@ const request:request.asyncRequest | undefined = inject('dataListRequest')
 const requestType = request!.requestType
 // http[requestType]
 const {data} = await http.dynamicType(requestType, request!.url, request?.params) as any
+console.log(data)
 </script>

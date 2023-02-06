@@ -1,17 +1,16 @@
-import { type } from 'os'
 import type { Ref } from 'vue'
 
 export namespace indexVue {
 
   // 顶部路由切换的数据类型
-  export interface viewChangeItem {
-    id: number,
-    name: string,
-    state: boolean,
-    select: boolean
-    to: string
-  }
-  export type viewChangeList = Ref<viewChangeItem[]>
+  // export interface viewChangeItem {
+  //   id: number,
+  //   name: string,
+  //   state: boolean,
+  //   select: boolean
+  //   to: string
+  // }
+  // export type viewChangeList = Ref<viewChangeItem[]>
 
 
   // 头部标签的数据类型
@@ -29,7 +28,6 @@ export namespace indexVue {
     id: number,
     children: number
   }
-
 
   // 底部导航的数据类型
   export interface bottomBarItem {

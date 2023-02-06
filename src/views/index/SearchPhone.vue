@@ -1,4 +1,5 @@
 <template>
+  <!-- <div><input type="text"></div> -->
   <div class="container">
     <div class="content_box">
       <div class="type_select_box">
@@ -120,7 +121,7 @@ let typeSelectChange = (id: number)=>{
     width: 950px;
     background-color: #fff;
     // margin-top: 20px;
-    margin: 20px auto 0;
+    margin: 0 auto 0;
     .type_select_box {
       display: flex;
       align-items: center;

@@ -13,6 +13,10 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('@/views/index/Index.vue')
   },
   {
+    path: '/searchPhone',
+    component: () => import('@/views/index/SearchPhone.vue')
+  },
+  {
     path: '/search',
     component: () => import('@/views/index/Search.vue')
   },
@@ -56,16 +60,18 @@ const phoneBottomTabWhite = [
   '/my',
   '/chat'
 ]
-router.beforeEach((to, from) => {
+router.beforeEach((to, from, next) => {
   const routerS = routerStore()
   routerS.fullpath = to.fullPath
   if (routerS.isWindow) {
     windowHeaderBlack.some((value) => to.fullPath == value) ? routerS.windowHeaderState = false : routerS.windowHeaderState = true
+    routerS.viewChangeFn(to.fullPath)
   } else {
     routerS.windowHeaderState = true
     phoneHeaderWhite.some((value) => to.fullPath == value) ? routerS.headerState = true : routerS.headerState = false
     phoneBottomTabWhite.some((value) => to.fullPath == value) ? routerS.footerState = true : routerS.footerState = false
   }
+  next()
 })
 
 
