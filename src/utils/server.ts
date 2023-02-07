@@ -136,7 +136,7 @@ export default {
       })
     })
   },
-  dynamicType(type: 'get' | 'post' | 'put' | 'delete', url: string, params?: request.requestParams) {
+  dynamicType(url: string, type: 'get' | 'post' | 'put' | 'delete', params?: request.requestParams) {
     switch (type) {
       case 'get':
         return this.get(url, params)

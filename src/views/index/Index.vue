@@ -68,14 +68,16 @@
 <script lang="ts" setup>
 import { routerStore } from '@/store/index';
 import { indexVue } from '@/types/index'
+import { request } from '@/types/request';
 import SkeletonVue from '@/components/Skeleton.vue'
-// import http from '@/utils/server'
-// import bus from '@/utils/bus'
+import bus from '@/utils/bus'
 // import { Ref } from 'vue';
 
 const routerS = routerStore()
-provide('dataListRequest', {url: '/tempList', params: {}, requestType: 'get'})
+const requestObj:request.asyncRequestRef = ref<request.asyncRequest>({url: '/tempList', params: {}, requestType: 'get'})
+provide('requestDataObj', requestObj)
 
+// bus.emit('requestDataObj', {url: '/tempList', requestType: 'get', params: {}})
 const typeSelectList:indexVue.typeSelectList = ref(
   [
     {

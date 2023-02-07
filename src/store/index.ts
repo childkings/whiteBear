@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+const router = useRouter()
 
 export const routerStore = defineStore('base', {
   state() {

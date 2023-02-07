@@ -2,7 +2,7 @@
   <div class="container">
     <div class="header_body">
       <div class="header_subject">
-        <div class="header_center" v-if="routerS.headerState">
+        <div class="header_center" v-if="routerS.headerState && routerS.fullpath == '/index'">
           <div class="header_left">
             <div class="logo_box"></div>
             <div class="view_list" v-if="routerS.isWindow">
@@ -34,7 +34,7 @@
           </div>
         </div>
         <div class="none_box" v-else>
-          <span class="icon-chevron-left" @click="backFn"></span>
+          <span class="icon-chevron-left" @click="backFn" v-if="!routerS.headerState"></span>
         </div>
       </div>
       <div class="label_box" v-if="routerS.isWindow">
@@ -62,11 +62,11 @@
     </div>
     <Teleport to="body">
       <footer class="footer_body" v-if="routerS.footerState && !routerS.isWindow">
-        <div v-for="item in bottomBarList" :key="item.id" :style="{color: routerS.fullpath == item.to ? 'rgb(125, 171, 235)': '#666'}">
+        <div v-for="item in bottomBarList" :key="item.id" :style="{color: routerS.fullpath == item.to ? 'rgb(125, 171, 235)': '#666'}" @click="bottomGo(item.to)">
           <div>
             <span :class="item.icon"></span>
           </div>
-          <RouterLink :to="item.to" :style="{color: routerS.fullpath == item.to ? 'rgb(125, 171, 235)': '#666', fontSize: '13px', marginTop: '2px'}">{{ item.name }}</RouterLink>
+          <a :style="{color: routerS.fullpath == item.to ? 'rgb(125, 171, 235)': '#666', fontSize: '13px', marginTop: '2px'}">{{ item.name }}</a>
         </div>
       </footer>
     </Teleport>
@@ -83,7 +83,6 @@ const routerS = routerStore()
 const router = useRouter()
 
 const backFn = () => {
-  console.log(12312)
   router.back()
 }
 // const viewChangeList:indexVue.viewChangeList = ref([
@@ -144,26 +143,27 @@ const label_list:indexVue.labelList = ref([
   }
 ])
 const label_search_list:indexVue.labelList = ref([
-  {id: 1, label: '文章'},
-  {id: 2, label: '用户'}
+  {id: 0, label: '文章'},
+  {id: 1, label: '用户'}
 ])
-let labelSelect:Ref<indexVue.labelSelect> = ref({
+let labelSelect = reactive({
   id: 0,
   children: 0
 })
-// let labelSelectItemFn = (...args: any)=>{
-//   bus.emit('labelSelectItem', ...args)
-// }
+// bus.emit('getRequestApiData', labelSelect)
 let labelItemFn = (item: indexVue.labelItem) => {
-  labelSelect.value.id = item.id
-  item.children ? labelSelect.value.children = 1: false
+  labelSelect.id = item.id
+  item.children ? labelSelect.children = 1: false
+  bus.emit('getRequestApiData', labelSelect)
   // labelSelectItemFn(labelSelect.value)
 }
 let labelItemChildFn = (i: indexVue.labelClassItem, item: indexVue.labelItem) => {
-  labelSelect.value.id = item.id
-  labelSelect.value.children = i.id
+  labelSelect.id = item.id
+  labelSelect.children = i.id
+  bus.emit('getRequestApiData', labelSelect)
   // labelSelectItemFn(labelSelect.value)
 }
+
 
 let inputChange = ref(false)
 let selectLabelCascader:Ref<number[]> = ref([0])
@@ -178,11 +178,13 @@ let bottomBarList:indexVue.bottomBarList = ref([
   {id: 3, to: '/chat', name: '浮冰', icon: 'icon-octagon'},
   {id: 4, to: '/my', name: '我的', icon: 'icon-user'}
 ])
-let selectChange = function() {
-  labelSelect.value.id = selectLabelCascader.value[0]
-  selectLabelCascader.value[1] ? labelSelect.value.children = selectLabelCascader.value[1] : false
+const bottomGo = (to: string)=>{
+  router.push(to)
 }
-
+let selectChange = function() {
+  labelSelect.id = selectLabelCascader.value[0]
+  selectLabelCascader.value[1] ? labelSelect.children = selectLabelCascader.value[1] : false
+}
 // console.log(routerS.footerState, !routerS.isWindow)
 </script>
 
@@ -357,6 +359,7 @@ let selectChange = function() {
   justify-content: space-around;
   align-items: center;
   border-top: 1px solid rgb(235, 235, 235);
+  cursor: pointer;
   >div {
     flex: 1;
     height: 100%;
