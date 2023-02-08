@@ -2,7 +2,7 @@
   <div class="container">
     <div class="header_body">
       <div class="header_subject">
-        <div class="header_center" v-if="routerS.headerState && routerS.fullpath == '/index'">
+        <div class="header_center" v-if="routerS.isWindow || routerS.headerState && routerS.fullpath == '/index'">
           <div class="header_left">
             <div class="logo_box"></div>
             <div class="view_list" v-if="routerS.isWindow">
@@ -18,7 +18,7 @@
           </div>
           <div class="header_right">
             <div :class="inputChange ? ['search_box', 'search_box_select']: ['search_box']" @click="phoneSearch">
-              <input type="text" @focus="inputChange = true" @blur="inputChange = false" :placeholder="inputChange ? '搜索文章、专栏、用户': '努力是给予探索者的明灯'">
+              <input type="text" v-model="searchText" @focus="inputChange = true" @blur="inputChange = false" :placeholder="inputChange ? '搜索文章、专栏、用户': '努力是给予探索者的明灯'">
               <div class="select_icon_box">
                 <span class="icon-search"></span>
               </div>
@@ -38,7 +38,7 @@
         </div>
       </div>
       <div class="label_box" v-if="routerS.isWindow">
-        <div class="label_item" v-for="(item, index) in routerS.fullpath == '/search' ? label_search_list: label_list" :key="item.id" @click="labelItemFn(item)" :style="{color: item.id == labelSelect.id ? 'rgb(113, 168, 246)': 'rgb(119, 119, 119)'}">
+        <div class="label_item" v-for="(item, index) in routerS.fullpath == '/search' ? routerS.label_search_list: label_list" :key="item.id" @click="labelItemFn(item)" :style="{color: item.id == routerS.labelSelect.id ? 'rgb(113, 168, 246)': 'rgb(119, 119, 119)'}">
           <span v-if="item.children && item.children.length != 0">
             <el-popover
               placement="bottom-start"
@@ -47,7 +47,7 @@
               :show-after="300"
             >
               <div class="label_class_popover" style="display: flex;flex-wrap: wrap;">
-                <div v-for="i in item.children" @click="labelItemChildFn(i, item)" :style="{backgroundColor: i.id == labelSelect.children ? 'rgb(125, 171, 235)':'rgb(244, 245, 245)', padding: '4px 8px',cursor: 'pointer',borderRadius: '40%', marginRight: '15px', marginBottom: '10px', color: i.id == labelSelect.children ? 'white': ''}">{{ i.label }}</div>
+                <div v-for="i in item.children" @click="labelItemChildFn(i, item)" :style="{backgroundColor: i.id == routerS.labelSelect.children ? 'rgb(125, 171, 235)':'rgb(244, 245, 245)', padding: '4px 8px',cursor: 'pointer',borderRadius: '40%', marginRight: '15px', marginBottom: '10px', color: i.id == routerS.labelSelect.children ? 'white': ''}">{{ i.label }}</div>
               </div>
               <template #reference>
                 <div>{{ item.label }}</div>
@@ -85,20 +85,6 @@ const router = useRouter()
 const backFn = () => {
   router.back()
 }
-// const viewChangeList:indexVue.viewChangeList = ref([
-//   {id: 1, name: '首页', state: true, select: true, to: '/index'},
-//   {id: 2, name: '浮冰', state: true, select: false, to: '/chat'},
-//   {id: 3, name: '捕鱼', state: false, select: false, to: '/'}
-// ])
-// const viewChangeFn = (id: number) => {
-//   viewChangeList.value.forEach((item) => {
-//     if(item.id == id) {
-//       item.select = true
-//     } else {
-//       item.select = false
-//     }
-//   })
-// }
 const goLogin = ()=>{
   router.push('/login')
 }
@@ -146,32 +132,45 @@ const label_search_list:indexVue.labelList = ref([
   {id: 0, label: '文章'},
   {id: 1, label: '用户'}
 ])
-let labelSelect = reactive({
-  id: 0,
-  children: 0
-})
-// bus.emit('getRequestApiData', labelSelect)
+// let labelSelect = reactive({
+//   id: 0,
+//   children: 0
+// })
+let selectLabelCascader:Ref<number[]> = ref([0])
+let getRequestApiDataFn = ()=>{
+  bus.emit('getRequestApiData', routerS.labelSelect)
+}
 let labelItemFn = (item: indexVue.labelItem) => {
-  labelSelect.id = item.id
-  item.children ? labelSelect.children = 1: false
-  bus.emit('getRequestApiData', labelSelect)
-  // labelSelectItemFn(labelSelect.value)
+  routerS.labelSelect.id = item.id
+  item.children ? routerS.labelSelect.children = 1: false
+  getRequestApiDataFn()
 }
 let labelItemChildFn = (i: indexVue.labelClassItem, item: indexVue.labelItem) => {
-  labelSelect.id = item.id
-  labelSelect.children = i.id
-  bus.emit('getRequestApiData', labelSelect)
-  // labelSelectItemFn(labelSelect.value)
+  routerS.labelSelect.id = item.id
+  routerS.labelSelect.children = i.id
+  getRequestApiDataFn()
+}
+let selectChange = () => {
+  routerS.labelSelect.id = selectLabelCascader.value[0]
+  selectLabelCascader.value[1] ? routerS.labelSelect.children = selectLabelCascader.value[1] : false
+  getRequestApiDataFn()
 }
 
 
+let searchText = ''
+window.addEventListener('keydown', (e)=>{
+  if(e.key == 'Enter' && inputChange.value == true && searchText != '') {
+    router.push({path: '/search', query: {searchText: searchText}})
+  }
+})
 let inputChange = ref(false)
-let selectLabelCascader:Ref<number[]> = ref([0])
-let phoneSearch = ()=>{
+let phoneSearch = ()=> {
   if(!routerS.isWindow) {
     router.push('/searchPhone')
   }
 }
+
+
 let bottomBarList:indexVue.bottomBarList = ref([
   {id: 1, to: '/index', name: '首页', icon: 'icon-home'},
   {id: 2, to: '/books', name: '书架', icon: 'icon-books'},
@@ -180,10 +179,6 @@ let bottomBarList:indexVue.bottomBarList = ref([
 ])
 const bottomGo = (to: string)=>{
   router.push(to)
-}
-let selectChange = function() {
-  labelSelect.id = selectLabelCascader.value[0]
-  selectLabelCascader.value[1] ? labelSelect.children = selectLabelCascader.value[1] : false
 }
 // console.log(routerS.footerState, !routerS.isWindow)
 </script>

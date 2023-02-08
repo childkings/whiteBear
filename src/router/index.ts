@@ -62,14 +62,18 @@ const phoneBottomTabWhite = [
 ]
 router.beforeEach((to, from, next) => {
   const routerS = routerStore()
-  routerS.fullpath = to.fullPath
+  routerS.fullpath = to.fullPath.split('?')[0]
+  routerS.labelSelect = {
+    id: 0,
+    children: 0
+  }
   if (routerS.isWindow) {
-    windowHeaderBlack.some((value) => to.fullPath == value) ? routerS.windowHeaderState = false : routerS.windowHeaderState = true
-    routerS.viewChangeFn(to.fullPath)
+    windowHeaderBlack.some((value) => routerS.fullpath == value) ? routerS.windowHeaderState = false : routerS.windowHeaderState = true
+    routerS.viewChangeFn(routerS.fullpath)
   } else {
     routerS.windowHeaderState = true
-    phoneHeaderWhite.some((value) => to.fullPath == value) ? routerS.headerState = true : routerS.headerState = false
-    phoneBottomTabWhite.some((value) => to.fullPath == value) ? routerS.footerState = true : routerS.footerState = false
+    phoneHeaderWhite.some((value) => routerS.fullpath == value) ? routerS.headerState = true : routerS.headerState = false
+    phoneBottomTabWhite.some((value) => routerS.fullpath == value) ? routerS.footerState = true : routerS.footerState = false
   }
   next()
 })

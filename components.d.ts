@@ -7,7 +7,7 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    Async: typeof import('./src/components/async.vue')['default']
+    Async: typeof import('./src/components/Async.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCascader: typeof import('element-plus/es')['ElCascader']
     ElInput: typeof import('element-plus/es')['ElInput']

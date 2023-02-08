@@ -16,7 +16,7 @@
           </el-select>
         </div>
       </div>
-      <div class="floor_box">
+      <div class="floor_box" v-if="dataState">
         <SkeletonVue v-if="baseMessage == 0">
           <template #default="{data}">
             <!-- <h1>{{ data }}</h1> -->
@@ -93,24 +93,30 @@ import { request } from '@/types/request'
 import SkeletonVue from '@/components/Skeleton.vue'
 // import http from '@/utils/server'
 import bus from '@/utils/bus'
-// import { Ref } from 'vue';
+import { Ref } from 'vue';
 
 const routerS = routerStore()
-const baseMessage = ref(0)
-const requestObj:request.asyncRequestRef = ref<request.asyncRequest>({url: '/tempList', params: {}, requestType: 'get'})
-// const provideRef:request.asyncRequest = reactive(requestObjList.value[0])
+const route = useRoute()
 
-provide('requestDataObj', requestObj)
+const dataState:Ref<boolean> = ref(false)
+const baseMessage = ref(0)
+const requestObj:request.asyncRequest = reactive({url: '/tempList', params: {id: 0, children: 0}, requestType: 'get'})
+// const provideRef:request.asyncRequest = reactive(requestObjList.value[0])
+onMounted(()=>{
+  requestObj.params.searchText = route.query.searchText
+  dataState.value = true
+  provide('requestDataObj', requestObj)
+})
 bus.on('getRequestApiData', (requestTypeObj: request.requestParams)=>{
   baseMessage.value = requestTypeObj.id
   // console.log(requestObj.value[0])
   if(baseMessage.value == 0) {
-    requestObj.value = {url: '/tempList', params: {}, requestType: 'get'}
+    requestObj.url = '/tempList'
     // provideRef.url = requestObjList.value[0].url
     // provideRef.params = requestObjList.value[0].params
     // provideRef.requestType = requestObjList.value[0].requestType
   } else {
-    requestObj.value = {url: '/tempUser', params: {}, requestType: 'get'}
+    requestObj.url = '/tempUser'
     // provideRef.url = requestObjList.value[1].url
     // provideRef.params = requestObjList.value[1].params
     // provideRef.requestType = requestObjList.value[1].requestType

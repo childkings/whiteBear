@@ -17,7 +17,7 @@
         </div>
       </div>
       <div class="floor_box">
-        <SkeletonVue>
+        <SkeletonVue v-if="isLoad">
           <template #default="{data}">
             <!-- <h1>{{ data }}</h1> -->
             <div v-for="item in data" :key="item.id" class="article_item">
@@ -60,6 +60,56 @@
             </div>
           </template>
         </SkeletonVue>
+        <SkeletonVue v-else>
+          <template #default="{data}">
+            <!-- <h1>{{ data }}</h1> -->
+            <div v-for="item in data" :key="item.id" class="article_item">
+              <div class="article_subject">
+                <div class="top_box">
+                  <div class="top_left">
+                    <div class="name_box">
+                      {{ item.user_name }}
+                    </div>
+                    <div class="time_box">
+                      {{ item.time }}
+                    </div>
+                  </div>
+                  <div class="top_right">
+                    <div class="label_item" v-for="i in item.labels">{{ i.name }}</div>
+                  </div>
+                </div>
+                <div class="bottom_box">
+                  <div class="title_box">{{ item.title }}</div>
+                  <div class="other_box">
+                    <div class="article_base">
+                      <div class="content_base">{{ item.content }}</div>
+                      <div class="action_box">
+                        <div class="up_box">
+                          <span class="icon-thumbs-up icon_margin" :style="{color: item.up_state ? 'rgb(113, 168, 246)': 'rgb(119, 119, 119)'}"></span>
+                          <span class="up_number" :style="{color: item.up_state ? 'rgb(113, 168, 246)': 'rgb(119, 119, 119)'}">{{ item.up_number }}</span>
+                        </div>
+                        <div class="comment_box">
+                          <span class="icon-message-square icon_margin"></span>
+                          <span class="comment_number">{{ item.comment_number }}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="img_box">
+                      <img :src="item.img_url" alt="">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </template>
+        </SkeletonVue>
+        <!-- <div v-else>
+          <div style="width: 100%;padding-left: 20px;padding-top: 12px;">
+            <div style="width: 80%">
+              <el-skeleton :rows="3" />
+            </div>
+          </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -70,14 +120,23 @@ import { routerStore } from '@/store/index';
 import { indexVue } from '@/types/index'
 import { request } from '@/types/request';
 import SkeletonVue from '@/components/Skeleton.vue'
+// import async from '@/components/async.vue'
 import bus from '@/utils/bus'
-// import { Ref } from 'vue';
+import router from '@/router';
+import { Ref } from 'vue';
 
 const routerS = routerStore()
-const requestObj:request.asyncRequestRef = ref<request.asyncRequest>({url: '/tempList', params: {}, requestType: 'get'})
+const requestObj:request.asyncRequest = reactive({url: '/tempList', params: {id: 0, children: 0}, requestType: 'get'})
+const isLoad:Ref<boolean> = ref(true)
 provide('requestDataObj', requestObj)
 
-// bus.emit('requestDataObj', {url: '/tempList', requestType: 'get', params: {}})
+bus.on('getRequestApiData', (requestTypeObj: request.requestParams)=>{
+  // console.log(routerS.isLoad)
+  isLoad.value = !isLoad.value
+  requestObj.params.id = requestTypeObj.id
+  requestObj.params.children = requestTypeObj.children
+})
+
 const typeSelectList:indexVue.typeSelectList = ref(
   [
     {

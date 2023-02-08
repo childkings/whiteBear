@@ -18,9 +18,11 @@
 </template>
 
 <script lang="ts" setup>
+import { routerStore } from '@/store/index';
 
+const routerS = routerStore()
 const SkeletonVue = defineAsyncComponent({
-  loader: ()=> import('@/components/async.vue')
+  loader: ()=> import('@/components/Async.vue')
 })
 
 </script>
