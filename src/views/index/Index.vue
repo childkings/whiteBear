@@ -17,7 +17,7 @@
         </div>
       </div>
       <div class="floor_box">
-        <SkeletonVue v-if="isLoad">
+        <SkeletonVue :isLoad="isLoad">
           <template #default="{data}">
             <!-- <h1>{{ data }}</h1> -->
             <div v-for="item in data" :key="item.id" class="article_item">
@@ -60,9 +60,8 @@
             </div>
           </template>
         </SkeletonVue>
-        <SkeletonVue v-else>
+        <!-- <SkeletonVue v-else>
           <template #default="{data}">
-            <!-- <h1>{{ data }}</h1> -->
             <div v-for="item in data" :key="item.id" class="article_item">
               <div class="article_subject">
                 <div class="top_box">
@@ -102,7 +101,7 @@
               </div>
             </div>
           </template>
-        </SkeletonVue>
+        </SkeletonVue> -->
         <!-- <div v-else>
           <div style="width: 100%;padding-left: 20px;padding-top: 12px;">
             <div style="width: 80%">

@@ -19,7 +19,7 @@
           <div class="header_right">
             <div :class="inputChange ? ['search_box', 'search_box_select']: ['search_box']" @click="phoneSearch">
               <input type="text" v-model="searchText" @focus="inputChange = true" @blur="inputChange = false" :placeholder="inputChange ? '搜索文章、专栏、用户': '努力是给予探索者的明灯'">
-              <div class="select_icon_box">
+              <div class="select_icon_box" @click="searchClick">
                 <span class="icon-search"></span>
               </div>
             </div>
@@ -157,15 +157,30 @@ let selectChange = () => {
 }
 
 let searchText = ref('')
-onMounted(()=>{
-  window.addEventListener('keydown', (e)=>{
-    if(e.key == 'Enter' && inputChange.value == true && searchText.value != '') {
-      if(routerS.fullpath != '/search') {
-        router.push({path: '/search', query: {searchText: searchText.value}})
-      } else {
-        bus.emit('getNewSearchText', searchText)
-      }
+const searchClick = ()=> {
+  if(searchText.value != '') {
+    if(routerS.fullpath != '/search') {
+      router.push({path: '/search', query: {searchText: searchText.value}})
+    } else {
+      bus.emit('getNewSearchText', searchText)
     }
+  }
+}
+const searchEvent = (e?: KeyboardEvent)=>{
+  if(e && e.key != 'Enter') {
+    return
+  }
+  if(inputChange.value == true && searchText.value != '') {
+    if(routerS.fullpath != '/search') {
+      router.push({path: '/search', query: {searchText: searchText.value}})
+    } else {
+      bus.emit('getNewSearchText', searchText)
+    }
+  }
+}
+onMounted(()=> {
+  window.addEventListener('keydown', (e)=>{
+    searchEvent(e)
   })
 })
 let inputChange = ref(false)
@@ -174,7 +189,6 @@ let phoneSearch = ()=> {
     router.push('/searchPhone')
   }
 }
-
 
 let bottomBarList:indexVue.bottomBarList = ref([
   {id: 1, to: '/index', name: '首页', icon: 'icon-home'},
@@ -290,6 +304,7 @@ const bottomGo = (to: string)=>{
           justify-content: center;
           background-color: rgb(242, 243, 245);
           border-radius: 5px;
+          cursor: pointer;
           >span {
             color: #666;
           }

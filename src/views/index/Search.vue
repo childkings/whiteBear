@@ -16,8 +16,8 @@
           </el-select>
         </div>
       </div>
-      <div class="floor_box" v-if="dataState">
-        <SkeletonVue v-if="baseMessage == 0">
+      <div class="floor_box">
+        <SkeletonVue :isLoad="isLoad" v-if="dataState">
           <template #default="{data}">
             <!-- <h1>{{ data }}</h1> -->
             <div v-for="item in data" :key="item.id" class="article_item">
@@ -60,9 +60,8 @@
             </div>
           </template>
         </SkeletonVue>
-        <SkeletonVue v-else>
+        <SkeletonVue :isLoad="isLoad" v-else>
           <template #default="{data}">
-            <!-- <h1>{{ data }}</h1> -->
             <div class="search_user_box">
               <div v-for="item in data" :key="item.id" class="article_item">
                 <div class="article_subject">
@@ -99,17 +98,19 @@ import { LocationQueryValue } from 'vue-router';
 const routerS = routerStore()
 const route = useRoute()
 
-const dataState:Ref<boolean> = ref(false)
+const dataState:Ref<boolean> = ref(true)
+const isLoad:Ref<boolean> = ref(true)
 const baseMessage = ref(0)
-const requestObj:request.asyncRequest = reactive({url: '/tempList', params: {id: 0, children: 0}, requestType: 'get'})
+const requestObj:request.asyncRequest = reactive({url: '/tempList', params: {id: 0, children: 0,searchText: ''}, requestType: 'get'})
 // const provideRef:request.asyncRequest = reactive(requestObjList.value[0])
 provide('requestDataObj', requestObj)
 onMounted(()=>{
   searchFn(route.query.searchText)
 })
-const searchFn = (searchText: LocationQueryValue | LocationQueryValue[])=>{
+const searchFn = (searchText: LocationQueryValue | LocationQueryValue[])=> {
+  isLoad.value = !isLoad.value
   requestObj.params.searchText = searchText
-  dataState.value = true
+  // dataState.value = true
 }
 bus.on('getNewSearchText', (searchText)=>{
   searchFn(searchText)
@@ -119,11 +120,13 @@ bus.on('getRequestApiData', (requestTypeObj: request.requestParams)=>{
   // console.log(requestObj.value[0])
   if(baseMessage.value == 0) {
     requestObj.url = '/tempList'
+    dataState.value = true
     // provideRef.url = requestObjList.value[0].url
     // provideRef.params = requestObjList.value[0].params
     // provideRef.requestType = requestObjList.value[0].requestType
   } else {
     requestObj.url = '/tempUser'
+    dataState.value = false
     // provideRef.url = requestObjList.value[1].url
     // provideRef.params = requestObjList.value[1].params
     // provideRef.requestType = requestObjList.value[1].requestType
