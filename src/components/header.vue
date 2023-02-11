@@ -156,12 +156,17 @@ let selectChange = () => {
   getRequestApiDataFn()
 }
 
-
-let searchText = ''
-window.addEventListener('keydown', (e)=>{
-  if(e.key == 'Enter' && inputChange.value == true && searchText != '') {
-    router.push({path: '/search', query: {searchText: searchText}})
-  }
+let searchText = ref('')
+onMounted(()=>{
+  window.addEventListener('keydown', (e)=>{
+    if(e.key == 'Enter' && inputChange.value == true && searchText.value != '') {
+      if(routerS.fullpath != '/search') {
+        router.push({path: '/search', query: {searchText: searchText.value}})
+      } else {
+        bus.emit('getNewSearchText', searchText)
+      }
+    }
+  })
 })
 let inputChange = ref(false)
 let phoneSearch = ()=> {

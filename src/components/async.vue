@@ -21,7 +21,7 @@ const requestFn = async() => {
   // routerS.isLoad = true
   const temp = await http.dynamicType(requestObj.value!.url, requestObj.value!.requestType, requestObj.value?.params) as any
   data.value = temp.data
-  routerS.isLoad = false
+  // routerS.isLoad = false
 }
 await requestFn()
 // await watch(requestObj, ()=>{

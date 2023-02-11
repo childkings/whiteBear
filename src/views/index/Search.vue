@@ -94,6 +94,7 @@ import SkeletonVue from '@/components/Skeleton.vue'
 // import http from '@/utils/server'
 import bus from '@/utils/bus'
 import { Ref } from 'vue';
+import { LocationQueryValue } from 'vue-router';
 
 const routerS = routerStore()
 const route = useRoute()
@@ -102,10 +103,16 @@ const dataState:Ref<boolean> = ref(false)
 const baseMessage = ref(0)
 const requestObj:request.asyncRequest = reactive({url: '/tempList', params: {id: 0, children: 0}, requestType: 'get'})
 // const provideRef:request.asyncRequest = reactive(requestObjList.value[0])
+provide('requestDataObj', requestObj)
 onMounted(()=>{
-  requestObj.params.searchText = route.query.searchText
+  searchFn(route.query.searchText)
+})
+const searchFn = (searchText: LocationQueryValue | LocationQueryValue[])=>{
+  requestObj.params.searchText = searchText
   dataState.value = true
-  provide('requestDataObj', requestObj)
+}
+bus.on('getNewSearchText', (searchText)=>{
+  searchFn(searchText)
 })
 bus.on('getRequestApiData', (requestTypeObj: request.requestParams)=>{
   baseMessage.value = requestTypeObj.id
