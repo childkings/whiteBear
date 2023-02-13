@@ -157,6 +157,7 @@ let selectChange = () => {
 }
 
 let searchText = ref('')
+let updataState = false
 const searchClick = ()=> {
   if(searchText.value != '') {
     if(routerS.fullpath != '/search') {
@@ -166,11 +167,15 @@ const searchClick = ()=> {
     }
   }
 }
+watch(searchText, ()=>{
+  updataState = true
+})
 const searchEvent = (e?: KeyboardEvent)=>{
   if(e && e.key != 'Enter') {
     return
   }
-  if(inputChange.value == true && searchText.value != '') {
+  if(inputChange.value == true && searchText.value != '' && updataState) {
+    updataState = false
     if(routerS.fullpath != '/search') {
       router.push({path: '/search', query: {searchText: searchText.value}})
     } else {
@@ -186,7 +191,7 @@ onMounted(()=> {
 let inputChange = ref(false)
 let phoneSearch = ()=> {
   if(!routerS.isWindow) {
-    router.push('/searchPhone')
+    router.push('/search')
   }
 }
 

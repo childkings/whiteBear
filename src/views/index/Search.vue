@@ -1,6 +1,14 @@
 <template>
   <div class="container">
     <div class="content_box">
+      <!-- <div class="search_box_father">
+        <div class="search_box">
+          <input type="text" v-model="searchText" @focus="inputChange = true" @blur="inputChange = false" @input="searchInput" :placeholder="inputChange ? '搜索文章、专栏、用户': '努力是给予探索者的明灯'">
+          <div class="select_icon_box" @click="searchClick">
+            <span class="icon-search"></span>
+          </div>
+        </div>
+      </div> -->
       <div class="type_select_box" v-if="baseMessage == 0">
         <div v-for="item in typeSelectList" :key="item.id"  :style="{color: item.select ? 'rgb(113, 168, 246)': 'rgb(119, 119, 119)'}" @click="typeSelectChange(item.id)">
           {{ item.type }}
@@ -133,6 +141,29 @@ bus.on('getRequestApiData', (requestTypeObj: request.requestParams)=>{
   }
 })
 
+const searchText:Ref<string> = ref('')
+let inputChange = ref(false)
+let setTime:number | NodeJS.Timeout | null = null
+const searchClick = ()=> {
+  if(searchText.value != '') {
+    if(setTime == null) {
+      searchFn(searchText.value)
+    }
+  }
+}
+const searchInput = ()=>{
+  if(setTime) {
+    clearTimeout(setTime)
+    setTime = setTimeout(()=>{
+      searchFn(searchText.value)
+    }, 500)
+  } else {
+    setTime = setTimeout(()=>{
+      searchFn(searchText.value)
+    }, 500)
+  }
+}
+
 const typeSelectList:indexVue.typeSelectList = ref(
   [
     {
@@ -146,14 +177,12 @@ const typeSelectList:indexVue.typeSelectList = ref(
     }
   ]
 )
-
 const timeSelectList: indexVue.timeSelectList = ref([
   {value: 1 as 1, label: '3天内'},
   {value: 2 as 2, label: '7天内'},
   {value: 3 as 3, label: '30天内'},
   {value: 0 as 0, label: '全部'}
 ])
-
 let typeSelectChange = (id: number)=>{
   typeSelectList.value.forEach((item)=>{
     if(item.id == id) {
@@ -174,10 +203,51 @@ let typeSelectChange = (id: number)=>{
   width: 100%;
   height: 100%;
   .content_box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     width: 950px;
     background-color: #fff;
     // margin-top: 20px;
     margin: 20px auto 0;
+    .search_box_father {
+      .search_box {
+        position: sticky;
+        top: 10vh;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 262px;
+        height: 34px;
+        padding: 0 2px;
+        border: 1px solid rgb(206, 206, 206);
+        border-radius: 5px;
+        background-color: #fff;
+        transition: width .3s;
+        > input {
+          width: 180px;
+          height: 90%;
+          border: none;
+          color: #666;
+        };
+        > input:focus {
+          outline: none;
+        }
+        .select_icon_box {
+          height: 90%;
+          width: 50px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background-color: rgb(242, 243, 245);
+          border-radius: 5px;
+          cursor: pointer;
+          >span {
+            color: #666;
+          }
+        }
+      }
+    }
     .type_select_box {
       display: flex;
       align-items: center;
