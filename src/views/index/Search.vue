@@ -1,14 +1,17 @@
 <template>
   <div class="container">
     <div class="content_box">
-      <!-- <div class="search_box_father">
+      <div class="search_box_father" v-if="!routerS.isWindow">
+        <div class="tips_box">
+          <el-cascader :options="routerS.label_search_list" :show-all-levels="false" :props="{value: 'id', emitPath: true}" v-model="selectLabelCascader" @change="selectChange"/>
+        </div>
         <div class="search_box">
           <input type="text" v-model="searchText" @focus="inputChange = true" @blur="inputChange = false" @input="searchInput" :placeholder="inputChange ? '搜索文章、专栏、用户': '努力是给予探索者的明灯'">
           <div class="select_icon_box" @click="searchClick">
             <span class="icon-search"></span>
           </div>
         </div>
-      </div> -->
+      </div>
       <div class="type_select_box" v-if="baseMessage == 0">
         <div v-for="item in typeSelectList" :key="item.id"  :style="{color: item.select ? 'rgb(113, 168, 246)': 'rgb(119, 119, 119)'}" @click="typeSelectChange(item.id)">
           {{ item.type }}
@@ -106,24 +109,26 @@ import { LocationQueryValue } from 'vue-router';
 const routerS = routerStore()
 const route = useRoute()
 
+// 传递到底部组件必须值--provide('requestDataObj', 。。。)请求对象、isLoad动态渲染变量
 const dataState:Ref<boolean> = ref(true)
 const isLoad:Ref<boolean> = ref(true)
 const baseMessage = ref(0)
 const requestObj:request.asyncRequest = reactive({url: '/tempList', params: {id: 0, children: 0,searchText: ''}, requestType: 'get'})
 // const provideRef:request.asyncRequest = reactive(requestObjList.value[0])
 provide('requestDataObj', requestObj)
-onMounted(()=>{
-  searchFn(route.query.searchText)
-})
+requestObj.params.searchText = route.query.searchText
+// onMounted(()=> {
+//   searchFn(route.query.searchText)
+// })
 const searchFn = (searchText: LocationQueryValue | LocationQueryValue[])=> {
   isLoad.value = !isLoad.value
   requestObj.params.searchText = searchText
   // dataState.value = true
 }
-bus.on('getNewSearchText', (searchText)=>{
+bus.on('getNewSearchText', (searchText)=> {
   searchFn(searchText)
 })
-bus.on('getRequestApiData', (requestTypeObj: request.requestParams)=>{
+const apiFn = (requestTypeObj: request.requestParams) => {
   baseMessage.value = requestTypeObj.id
   // console.log(requestObj.value[0])
   if(baseMessage.value == 0) {
@@ -139,6 +144,25 @@ bus.on('getRequestApiData', (requestTypeObj: request.requestParams)=>{
     // provideRef.params = requestObjList.value[1].params
     // provideRef.requestType = requestObjList.value[1].requestType
   }
+}
+bus.on('getRequestApiData', (requestTypeObj: request.requestParams)=> {
+  console.log(requestTypeObj)
+  apiFn(requestTypeObj)
+  // baseMessage.value = requestTypeObj.id
+  // // console.log(requestObj.value[0])
+  // if(baseMessage.value == 0) {
+  //   requestObj.url = '/tempList'
+  //   dataState.value = true
+  //   // provideRef.url = requestObjList.value[0].url
+  //   // provideRef.params = requestObjList.value[0].params
+  //   // provideRef.requestType = requestObjList.value[0].requestType
+  // } else {
+  //   requestObj.url = '/tempUser'
+  //   dataState.value = false
+  //   // provideRef.url = requestObjList.value[1].url
+  //   // provideRef.params = requestObjList.value[1].params
+  //   // provideRef.requestType = requestObjList.value[1].requestType
+  // }
 })
 
 const searchText:Ref<string> = ref('')
@@ -162,6 +186,10 @@ const searchInput = ()=>{
       searchFn(searchText.value)
     }, 500)
   }
+}
+let selectLabelCascader:Ref<number[]> = ref([])
+let selectChange = () => {
+  apiFn({id: selectLabelCascader.value})
 }
 
 const typeSelectList:indexVue.typeSelectList = ref(
@@ -203,17 +231,25 @@ let typeSelectChange = (id: number)=>{
   width: 100%;
   height: 100%;
   .content_box {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    // display: flex;
+    // flex-direction: column;
+    // align-items: center;
     width: 950px;
     background-color: #fff;
     // margin-top: 20px;
     margin: 20px auto 0;
     .search_box_father {
+      position: sticky;
+      top: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 8vh;
+      .tips_box {
+        margin: 0 20px;
+      }
       .search_box {
-        position: sticky;
-        top: 10vh;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -224,6 +260,7 @@ let typeSelectChange = (id: number)=>{
         border-radius: 5px;
         background-color: #fff;
         transition: width .3s;
+        margin-right: 20px;
         > input {
           width: 180px;
           height: 90%;

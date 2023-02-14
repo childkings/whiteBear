@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-const router = useRouter()
+// const router = useRouter()
 import { indexVue } from '@/types/index'
 let label_search_list: indexVue.labelList = ref([
   { id: 0, label: '文章' },
@@ -24,7 +24,7 @@ export const routerStore = defineStore('base', {
       labelSelect: {
         id: 0,
         children: 0
-      }
+      },
     }
   },
   actions: {

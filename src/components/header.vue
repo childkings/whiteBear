@@ -128,10 +128,10 @@ const label_list:indexVue.labelList = ref([
     ]
   }
 ])
-const label_search_list:indexVue.labelList = ref([
-  {id: 0, label: '文章'},
-  {id: 1, label: '用户'}
-])
+// const label_search_list:indexVue.labelList = ref([
+//   {id: 0, label: '文章'},
+//   {id: 1, label: '用户'}
+// ])
 // let labelSelect = reactive({
 //   id: 0,
 //   children: 0
@@ -371,9 +371,11 @@ const bottomGo = (to: string)=>{
   }
 }
 .footer_body {
-  position: fixed;
+  position: sticky;
+  position: -webkit-sticky;
   bottom: 0;
   height: 8vh;
+  // max-height: 8vh;
   width: 100%;
   display: flex;
   justify-content: space-around;
@@ -383,6 +385,7 @@ const bottomGo = (to: string)=>{
   >div {
     flex: 1;
     height: 100%;
+    max-height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -395,6 +398,7 @@ const bottomGo = (to: string)=>{
 
 @media screen and (min-width: 1440px) {
   .container {
+    height: 100vh;
     .header_body {
       .header_subject {
         .header_center {
@@ -431,7 +435,6 @@ const bottomGo = (to: string)=>{
 }
 @media screen and (min-width: 951px) {
   .container {
-    height: 110px;
     .header_body {
       height: 110px;
       .logo_box {
