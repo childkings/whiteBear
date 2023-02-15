@@ -9,7 +9,7 @@
               <div class="view_item" v-for="(item, index) in routerS.viewChangeList" :key="item.id" v-show="item.state">
                 <div class="view_text">
                   <RouterLink :to="item.to"  :style="{color: item.select ? 'rgb(125, 171, 235)': 'rgb(67, 67, 67)'}" @click="routerS.viewChangeFn(item.to)">{{ item.name }}</RouterLink>
-                </div> 
+                </div>
               </div>
             </div>
             <div class="tips_box">
@@ -28,7 +28,11 @@
                 <el-button type="primary" color="rgb(125, 171, 235)"><span style="color: white">创作中心&nbsp;&nbsp;<span class="icon-chevron-down"></span></span></el-button>
               </div>
               <div class="my_base">
-                <el-button type="primary" plain color="rgb(125, 171, 235)" @click="goLogin">登陆 / 注册</el-button>
+                <el-button type="primary" plain color="rgb(125, 171, 235)" @click="goLogin" v-if="!loginState">登陆 / 注册</el-button>
+                <div class="user_box" v-else>
+                  <span class="icon-bell"></span>
+                  <img src="https://p3-passport.byteimg.com/img/mosaic-legacy/3793/3114521287~100x100.awebp" alt="">
+                </div>
               </div>
             </div>
           </div>
@@ -81,6 +85,8 @@ import bus from '@/utils/bus'
 
 const routerS = routerStore()
 const router = useRouter()
+
+let loginState = ref(true)
 
 const backFn = () => {
   router.back()
@@ -208,6 +214,9 @@ const bottomGo = (to: string)=>{
 </script>
 
 <style lang="less" scoped>
+.container {
+  height: 110px;
+}
 .header_body {
   position:fixed;
   top: 0;
@@ -340,6 +349,22 @@ const bottomGo = (to: string)=>{
         >div {
           margin-left: 20px;
         }
+        .my_base {
+          .user_box {
+              display: flex;
+              align-items: center;
+              span {
+                font-size: 22px;
+                color: #8a919f;
+                margin-right: 10px;
+              }
+              img {
+                width: 36px;
+                height: 36px;
+                border-radius: 18px;
+              }
+            }
+        }
         // .my_base {
         //   margin-left: 20px;
         // }
@@ -398,7 +423,6 @@ const bottomGo = (to: string)=>{
 
 @media screen and (min-width: 1440px) {
   .container {
-    height: 100vh;
     .header_body {
       .header_subject {
         .header_center {

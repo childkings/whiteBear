@@ -16,7 +16,7 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()]
     }),
     legacy({
-      targets: ['chrome52']
+      targets: ['defaults', 'not IE 11']
     }),
     Components({
       resolvers: [ElementPlusResolver()],

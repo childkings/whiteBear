@@ -187,7 +187,7 @@ const searchInput = ()=>{
     }, 500)
   }
 }
-let selectLabelCascader:Ref<number[]> = ref([])
+let selectLabelCascader:Ref<number[]> = ref([0])
 let selectChange = () => {
   apiFn({id: selectLabelCascader.value})
 }
@@ -464,7 +464,7 @@ let typeSelectChange = (id: number)=>{
       .floor_box {
         .search_user_box {
           .article_item {
-            width: 50%;
+            width: 100%;
           }
         }
       }
