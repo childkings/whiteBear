@@ -169,11 +169,7 @@ const searchText:Ref<string> = ref('')
 let inputChange = ref(false)
 let setTime:number | NodeJS.Timeout | null = null
 const searchClick = ()=> {
-  if(searchText.value != '') {
-    if(setTime == null) {
-      searchFn(searchText.value)
-    }
-  }
+  searchFn(searchText.value)
 }
 const searchInput = ()=>{
   if(setTime) {

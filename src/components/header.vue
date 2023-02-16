@@ -1,6 +1,6 @@
 <template>
-  <div class="container">
-    <div class="header_body">
+  <div class="container" :style="{height: routerS.windowHeaderViceState ? '110px':'60px'}">
+    <div class="header_body" :style="{height: routerS.windowHeaderViceState ? '110px':'60px'}">
       <div class="header_subject">
         <div class="header_center" v-if="routerS.isWindow || routerS.headerState && routerS.fullpath == '/index'">
           <div class="header_left">
@@ -23,13 +23,13 @@
                 <span class="icon-search"></span>
               </div>
             </div>
-            <div class="my_box">
-              <div class="create_box" v-if="routerS.isWindow">
+            <div class="my_box" v-if="routerS.isWindow">
+              <div class="create_box">
                 <el-button type="primary" color="rgb(125, 171, 235)"><span style="color: white">创作中心&nbsp;&nbsp;<span class="icon-chevron-down"></span></span></el-button>
               </div>
               <div class="my_base">
                 <el-button type="primary" plain color="rgb(125, 171, 235)" @click="goLogin" v-if="!loginState">登陆 / 注册</el-button>
-                <div class="user_box" v-else>
+                <div class="user_box" v-else @click="goMy">
                   <span class="icon-bell"></span>
                   <img src="https://p3-passport.byteimg.com/img/mosaic-legacy/3793/3114521287~100x100.awebp" alt="">
                 </div>
@@ -41,7 +41,7 @@
           <span class="icon-chevron-left" @click="backFn" v-if="!routerS.headerState"></span>
         </div>
       </div>
-      <div class="label_box" v-if="routerS.isWindow">
+      <div class="label_box" v-if="routerS.isWindow && routerS.windowHeaderViceState">
         <div class="label_item" v-for="(item, index) in routerS.fullpath == '/search' ? routerS.label_search_list: label_list" :key="item.id" @click="labelItemFn(item)" :style="{color: item.id == routerS.labelSelect.id ? 'rgb(113, 168, 246)': 'rgb(119, 119, 119)'}">
           <span v-if="item.children && item.children.length != 0">
             <el-popover
@@ -200,6 +200,9 @@ let phoneSearch = ()=> {
     router.push('/search')
   }
 }
+const goMy = () => {
+  router.push('/my')
+}
 
 let bottomBarList:indexVue.bottomBarList = ref([
   {id: 1, to: '/index', name: '首页', icon: 'icon-home'},
@@ -215,7 +218,7 @@ const bottomGo = (to: string)=>{
 
 <style lang="less" scoped>
 .container {
-  height: 110px;
+  // height: 110px;
 }
 .header_body {
   position:fixed;
@@ -351,19 +354,20 @@ const bottomGo = (to: string)=>{
         }
         .my_base {
           .user_box {
-              display: flex;
-              align-items: center;
-              span {
-                font-size: 22px;
-                color: #8a919f;
-                margin-right: 10px;
-              }
-              img {
-                width: 36px;
-                height: 36px;
-                border-radius: 18px;
-              }
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            span {
+              font-size: 22px;
+              color: #8a919f;
+              margin: 0 10px 0 30px;
             }
+            img {
+              width: 36px;
+              height: 36px;
+              border-radius: 18px;
+            }
+          }
         }
         // .my_base {
         //   margin-left: 20px;
@@ -461,12 +465,17 @@ const bottomGo = (to: string)=>{
   .container {
     .header_body {
       height: 110px;
-      .logo_box {
-        width: 107px;
-        margin: 0 12px 0 24px;
-      }
-      .tips_box {
-        display: none;
+      .header_subject {
+        .header_center {
+
+          .logo_box {
+            width: 107px;
+            margin: 0 12px 0 24px;
+          }
+          .tips_box {
+            display: none;
+          }
+        }
       }
     }
   }

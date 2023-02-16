@@ -10,6 +10,7 @@ export const routerStore = defineStore('base', {
   state() {
     return {
       windowHeaderState: true,
+      windowHeaderViceState: true,
       headerState: true,
       footerState: false,
       isWindow: true,

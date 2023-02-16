@@ -25,6 +25,14 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('@/views/Chat.vue')
   },
   {
+    path: '/books',
+    component: () => import('@/views/my/Books.vue')
+  },
+  {
+    path: '/my',
+    component: () => import('@/views/my/My.vue')
+  },
+  {
     path: '/article',
     component: () => import('@/views/article/Article.vue')
   },
@@ -44,15 +52,20 @@ const windowHeaderBlack = [
   '/login',
   '/articleEdit',
 ]
+const windowHeaderViceWhite = [
+  '/index',
+  '/search',
+  // '/chat'
+]
 const phoneHeaderWhite = [
   '/index',
-  '/folder',
+  '/books',
   '/my',
   '/chat'
 ]
 const phoneBottomTabWhite = [
   '/index',
-  '/folder',
+  '/books',
   '/my',
   '/chat'
 ]
@@ -64,12 +77,13 @@ router.beforeEach((to, from, next) => {
     children: 0
   }
   if (routerS.isWindow) {
-    windowHeaderBlack.some((value) => routerS.fullpath == value) ? routerS.windowHeaderState = false : routerS.windowHeaderState = true
+    windowHeaderBlack.find((value) => routerS.fullpath == value) ? routerS.windowHeaderState = false : routerS.windowHeaderState = true
+    windowHeaderViceWhite.find((value) => routerS.fullpath == value) ? routerS.windowHeaderViceState = true : routerS.windowHeaderViceState = false
     routerS.viewChangeFn(routerS.fullpath)
   } else {
     routerS.windowHeaderState = true
-    phoneHeaderWhite.some((value) => routerS.fullpath == value) ? routerS.headerState = true : routerS.headerState = false
-    phoneBottomTabWhite.some((value) => routerS.fullpath == value) ? routerS.footerState = true : routerS.footerState = false
+    phoneHeaderWhite.find((value) => routerS.fullpath == value) ? routerS.headerState = true : routerS.headerState = false
+    phoneBottomTabWhite.find((value) => routerS.fullpath == value) ? routerS.footerState = true : routerS.footerState = false
   }
   next()
 })
