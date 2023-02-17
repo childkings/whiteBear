@@ -1,6 +1,6 @@
 <template>
-  <div class="container" :style="{height: routerS.windowHeaderViceState ? '110px':'60px'}">
-    <div class="header_body" :style="{height: routerS.windowHeaderViceState ? '110px':'60px'}">
+  <div class="container" :style="{height: routerS.isWindow && routerS.windowHeaderViceState ? '110px':'60px'}">
+    <div class="header_body" :style="{height: routerS.isWindow && routerS.windowHeaderViceState ? '110px':'60px'}">
       <div class="header_subject">
         <div class="header_center" v-if="routerS.isWindow || routerS.headerState && routerS.fullpath == '/index'">
           <div class="header_left">
@@ -217,9 +217,9 @@ const bottomGo = (to: string)=>{
 </script>
 
 <style lang="less" scoped>
-.container {
-  // height: 110px;
-}
+// .container {
+//   // height: 110px;
+// }
 .header_body {
   position:fixed;
   top: 0;

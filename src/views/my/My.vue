@@ -230,8 +230,12 @@ let hobby = ref('+你的生活爱好')
     .my_left {
       width: 100%;
       .my_details {
+        height: auto;
         flex-direction: column;
         align-items: center;
+        .update_box {
+          margin-top: 20px;
+        }
         // .my_left_box {
         //   display: flex;
         //   align-items: center;

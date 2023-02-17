@@ -34,10 +34,10 @@
 </template>
 
 <script lang="ts" setup>
-import { routerStore } from '@/store/index';
+// import { routerStore } from '@/store/index';
 // import type { Ref } from 'vue'
+// const routerS = routerStore()
 
-const routerS = routerStore()
 defineProps<{
   isLoad: boolean
 }>()

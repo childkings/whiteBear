@@ -146,7 +146,7 @@ const apiFn = (requestTypeObj: request.requestParams) => {
   }
 }
 bus.on('getRequestApiData', (requestTypeObj: request.requestParams)=> {
-  console.log(requestTypeObj)
+  // console.log(requestTypeObj)
   apiFn(requestTypeObj)
   // baseMessage.value = requestTypeObj.id
   // // console.log(requestObj.value[0])
